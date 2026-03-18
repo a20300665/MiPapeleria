@@ -1,0 +1,11 @@
+
+<header class="header">
+  <h1 class="title">🌸 Catálogo 🌸</h1>
+  <p class="subtitle">Encuentra tus productos favoritos 💕✨</p>
+</header>
+
+<section class="grid">
+  @for (p of products(); track p.idProducto) {
+    <app-product-card [product]="p"></app-product-card>
+  }
+</section>

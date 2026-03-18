@@ -1,0 +1,43 @@
+<div class="cart-container">
+
+<button class="cart-button" (click)="toggle()">
+
+🛒 {{ carrito.getCount() }}
+
+</button>
+
+@if(open()){
+
+<div class="cart-panel">
+
+<h3>Carrito</h3>
+
+@for(item of carrito.items(); track item.product.idProducto){
+
+<div class="item">
+
+<span>{{item.product.nombre}}</span>
+
+<span>
+{{item.cantidad}} x {{item.product.precio | currency:'MXN'}}
+</span>
+
+</div>
+
+}
+
+<hr>
+
+<p class="total">
+Total: {{ carrito.total() | currency:'MXN' }}
+</p>
+
+<a routerLink="/carrito" (click)="toggle()">
+Ver carrito completo
+</a>
+
+</div>
+
+}
+
+</div>

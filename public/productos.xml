@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+  <product>
+    <id>P001</id>
+    <nombre>Cuaderno</nombre>
+    <precio>35.50</precio>
+    <descripcion>Cuaderno de 100 hojas</descripcion>
+    <estado>Disponible</estado>
+    <cantidad>50</cantidad>
+    <imagen>cuaderno.jpg</imagen>
+    <fecha>2025-04-25</fecha>
+  </product>
+
+  <product>
+    <id>P002</id>
+    <nombre>Bolígrafo</nombre>
+    <precio>12.00</precio>
+    <descripcion>Bolígrafo de tinta azul</descripcion>
+    <estado>Agotado</estado>
+    <cantidad>0</cantidad>
+    <imagen>boligrafo.jpg</imagen>
+    <fecha>2025-04-26</fecha>
+  </product>
+
+  <product>
+    <id>P003</id>
+    <nombre>Marcatextos</nombre>
+    <precio>15.00</precio>
+    <descripcion>Resaltador color amarillo</descripcion>
+    <estado>Disponible</estado>
+    <cantidad>120</cantidad>
+    <imagen>marcatextos.jpg</imagen>
+    <fecha>2025-04-27</fecha>
+  </product>
+
+  <product>
+    <id>P004</id>
+    <nombre>Lápiz</nombre>
+    <precio>4.00</precio>
+    <descripcion>Lápiz de madera</descripcion>
+    <estado>Disponible</estado>
+    <cantidad>300</cantidad>
+    <imagen>lapiz.jpg</imagen>
+    <fecha>2025-04-28</fecha>
+  </product>
+
+  <product>
+    <id>P005</id>
+    <nombre>Calculadora Cientifíca</nombre>
+    <precio>45.00</precio>
+    <descripcion>Calculadora cientifíca</descripcion>
+    <estado>Disponible</estado>
+    <cantidad>75</cantidad>
+    <imagen>calculadora.jpg</imagen>
+    <fecha>2025-04-29</fecha>
+  </product>
+
+</products>

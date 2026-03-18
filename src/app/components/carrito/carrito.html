@@ -1,0 +1,51 @@
+<h2> 🛒 Carrito </h2>
+
+<div class="cart-container">
+
+@for (item of carrito.items(); track item.product.idProducto) {
+
+<div class="cart-item">
+
+<div class="item-left">
+<img
+[src]="'/' + (item.product.imagen || 'no-image.jpg')"
+[alt]="item.product.nombre"
+/>
+</div>
+
+<div class="item-center">
+<h3>{{ item.product.nombre }}</h3>
+<p>{{ item.product.precio | currency:'MXN' }}</p>
+</div>
+
+<div class="item-right">
+
+<button (click)="carrito.decrease(item.product.idProducto)">
+-
+</button>
+
+<span>{{ item.cantidad }}</span>
+
+<button (click)="carrito.increase(item.product.idProducto)">
++
+</button>
+
+<button (click)="carrito.removeProduct(item.product.idProducto)">
+🗑
+</button>
+
+</div>
+
+</div>
+
+}
+
+</div>
+
+<hr>
+
+<h3>Total: {{ carrito.total() | currency:'MXN' }}</h3>
+
+<div class="paypal-container">
+  <app-paypal></app-paypal>
+</div>
