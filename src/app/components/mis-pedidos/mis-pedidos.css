@@ -1,0 +1,114 @@
+.pedidos{
+  max-width:800px;
+  margin:auto;
+  padding:20px;
+}
+
+/* 💖 CARD */
+.pedido-card{
+  background:#ffffff;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:20px;
+
+  border:3px solid #ffc1e3;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+
+  transition:0.3s ease;
+}
+
+.pedido-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 15px 35px rgba(255,105,180,0.3);
+}
+
+/* HEADER */
+.pedido-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.pedido-id{
+  font-size:18px;
+  font-weight:bold;
+  color:#d63384;
+}
+
+.pedido-estado{
+  background:#ffe0ec;
+  padding:6px 12px;
+  border-radius:12px;
+  font-size:12px;
+  font-weight:bold;
+  color:#ff4d88;
+}
+
+/* INFO */
+.pedido-info{
+  color:#555;
+  margin-bottom:15px;
+}
+
+/* TOTAL */
+.pedido-total{
+  text-align:right;
+  font-size:20px;
+  font-weight:bold;
+  color:#ff4d88;
+}
+
+.productos{
+  background:#fff5fa;
+  padding:10px;
+  border-radius:12px;
+  margin:10px 0;
+}
+
+.titulo{
+  font-weight:bold;
+  color:#d63384;
+  margin-bottom:5px;
+}
+
+.producto-item{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  margin-bottom:3px;
+}
+
+.producto-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+}
+
+.img-mini{
+  width:40px;
+  height:40px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.info-prod{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+.nombre{
+  font-weight:bold;
+}
+
+.cantidad{
+  font-size:12px;
+  color:#777;
+}
+
+.precio{
+  font-weight:bold;
+  color:#ff4d88;
+}

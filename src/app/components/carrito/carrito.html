@@ -1,4 +1,4 @@
-<h2> 🛒 Carrito </h2>
+<h2>🛒 Carrito</h2>
 
 <div class="cart-container">
 
@@ -45,6 +45,10 @@
 <hr>
 
 <h3>Total: {{ carrito.total() | currency:'MXN' }}</h3>
+
+<button class="btn-clear" (click)="carrito.clearCart()">
+   Vaciar carrito 🗑️
+</button>
 
 <div class="paypal-container">
   <app-paypal></app-paypal>

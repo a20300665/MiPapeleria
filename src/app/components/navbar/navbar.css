@@ -1,0 +1,75 @@
+/* NAVBAR BASE */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  background: linear-gradient(135deg,#ff94c9, #f63c99);
+  box-shadow: 0 4px 12px rgba(255, 111, 181, 0.3);
+  z-index: 1000;
+}
+
+/* CONTENEDOR INTERNO (CLAVE) */
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 20px; 
+
+  padding: 12px 20px;
+}
+
+/* LOGO */
+.logo{
+  font-family: 'Pacifico', cursive;
+  font-size:26px;
+
+  background: linear-gradient(45deg, #fff, #ffe0ec);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* LINKS */
+.links {
+  display: flex;
+  gap: 15px;
+
+  margin-left: auto; /*empuja todo a la derecha */
+}
+
+/* LINK */
+.links a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+
+  padding: 6px 10px;
+  border-radius: 10px;
+
+  white-space: nowrap; /* evita cortes */
+
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.links a:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+}
+
+/* 📱 RESPONSIVE (CLAVE PARA QUE NO SE CORTE) */
+@media (max-width: 768px) {
+  .links span {
+    display: none; /* oculta texto en pantallas pequeñas */
+  }
+}

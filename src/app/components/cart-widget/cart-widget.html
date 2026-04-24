@@ -1,43 +1,48 @@
 <div class="cart-container">
 
-<button class="cart-button" (click)="toggle()">
+  <!-- 🛒 BOTÓN -->
+  <button class="cart-button" (click)="toggle()">
+    🛒 {{ carrito.getCount() }}
+  </button>
 
-🛒 {{ carrito.getCount() }}
+  <!-- 📦 PANEL -->
+  @if(open()){
 
-</button>
+  <div class="cart-panel">
 
-@if(open()){
+    <h3>Tu carrito 💖</h3>
 
-<div class="cart-panel">
+    @if(carrito.items().length === 0){
+      <p>Tu carrito está vacío</p>
+    } @else {
 
-<h3>Carrito</h3>
+      @for(item of carrito.items(); track item.product.idProducto){
 
-@for(item of carrito.items(); track item.product.idProducto){
+      <div class="item">
+        <span>{{item.product.nombre}}</span>
 
-<div class="item">
+        <span>
+          {{item.cantidad}} x {{item.product.precio | currency:'MXN'}}
+        </span>
+      </div>
 
-<span>{{item.product.nombre}}</span>
+      }
 
-<span>
-{{item.cantidad}} x {{item.product.precio | currency:'MXN'}}
-</span>
+      <hr>
 
-</div>
+      <p class="total">
+        Total: {{ carrito.total() | currency:'MXN' }}
+      </p>
 
-}
+      <!-- 💖 BOTÓN BONITO -->
+      <button class="go-cart-btn" routerLink="/carrito" (click)="toggle()">
+        Ver carrito completo 🛒
+      </button>
 
-<hr>
+    }
 
-<p class="total">
-Total: {{ carrito.total() | currency:'MXN' }}
-</p>
+  </div>
 
-<a routerLink="/carrito" (click)="toggle()">
-Ver carrito completo
-</a>
-
-</div>
-
-}
+  }
 
 </div>

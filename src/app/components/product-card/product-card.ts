@@ -12,12 +12,42 @@ import { CarritoService } from '../../services/carrito.service';
 })
 export class ProductCardComponent{
 
-@Input({required:true}) product!: Product;
+  @Input({required:true}) product!: Product;
 
-private carrito = inject(CarritoService);
+  private carrito = inject(CarritoService);
 
-addToCart(){
-  this.carrito.addProduct(this.product);
-}
+  cantidad: number = 1;
+
+  increase(){
+    if(this.cantidad < this.product.cantidad){
+      this.cantidad++;
+    }
+  }
+
+  decrease(){
+    if(this.cantidad > 1){
+      this.cantidad--;
+    }
+  }
+
+  onInputChange(event: any){
+    let value = Number(event.target.value);
+
+    if(isNaN(value) || value < 1){
+      value = 1;
+    }
+
+    if(value > this.product.cantidad){
+      value = this.product.cantidad;
+    }
+
+    this.cantidad = value;
+  }
+
+  addToCart(){
+    for(let i = 0; i < this.cantidad; i++){
+      this.carrito.addProduct(this.product);
+    }
+  }
 
 }

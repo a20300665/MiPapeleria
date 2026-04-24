@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-catalogo',
   standalone: true,
-  imports: [ProductCardComponent, RouterLink],
+  imports: [ProductCardComponent],
   templateUrl: './catalogo.html',
   styleUrls: ['./catalogo.css'],
 })

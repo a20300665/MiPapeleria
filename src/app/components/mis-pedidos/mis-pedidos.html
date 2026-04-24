@@ -1,0 +1,59 @@
+<div class="pedidos">
+
+  <h2>📦 Mis pedidos 📦 </h2>
+
+  @for(pedido of pedidos; track pedido.id_venta){
+
+    <div class="pedido-card">
+
+  <div class="pedido-header">
+    <span class="pedido-id">Pedido #{{pedido.id_venta}}</span>
+    <span class="pedido-estado">{{pedido.estado_pago}}</span>
+  </div>
+
+  <div class="pedido-info">
+    <p>📅 {{pedido.fecha | date:'short'}}</p>
+    <p>💳 {{pedido.metodo_pago}}</p>
+  </div>
+
+  <!--  PRODUCTOS -->
+  <div class="productos">
+
+  <p class="titulo">Productos:</p>
+
+  @for(prod of pedido.productos; track prod.nombre){
+
+    <div class="producto-item">
+
+      <!-- IMAGEN -->
+      <img 
+        class="img-mini"
+        [src]="'/' + (prod.imagen || 'no-image.jpg')" 
+      />
+
+      <!-- INFO -->
+      <div class="info-prod">
+        <span class="nombre">{{prod.nombre}}</span>
+        <span class="cantidad">x{{prod.cantidad}}</span>
+      </div>
+
+      <!-- PRECIO -->
+      <div class="precio">
+        {{prod.subtotal | currency:'MXN'}}
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+  <div class="pedido-total">
+    {{pedido.total | currency:'MXN'}}
+  </div>
+
+</div>
+
+  }
+
+</div>

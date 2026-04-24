@@ -9,12 +9,9 @@ export class ProductsService{
     private http = inject(HttpClient);
     private platformId = inject(PLATFORM_ID);
 
-    // 🔹 MÉTODO ACTUAL (XML) — lo dejamos
-    getAll(): Observable<Product[]> {
-        if(!isPlatformBrowser(this.platformId)) return of([]);
-        return this.http.get('productos.xml',{responseType: 'text'})
-            .pipe(map((xmlText) => this.parseProductsXml(xmlText)));
-    }
+   getAll(): Observable<Product[]> {
+    return this.http.get<Product[]>('http://localhost:3000/api/productos');
+}
 
     // 🔹 MÉTODO FUTURO (API) — para cuando conectemos backend
     getAllFromApi(): Observable<Product[]>{
