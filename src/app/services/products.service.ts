@@ -13,7 +13,7 @@ export class ProductsService{
     return this.http.get<Product[]>('http://localhost:3000/api/productos');
 }
 
-    // 🔹 MÉTODO FUTURO (API) — para cuando conectemos backend
+    // MÉTODO FUTURO (API) — para cuando conectemos backend
     getAllFromApi(): Observable<Product[]>{
         return this.http.get<Product[]>('http://localhost:3000/api/productos');
     }
@@ -30,6 +30,7 @@ export class ProductsService{
             precio: this.getNumber(node, 'precio'),
             descripcion: this.getText(node, 'descripcion'),
             estado: this.getText(node, 'estado'),
+            categoria: this.getText(node, 'categoria'),
             cantidad: this.getNumber(node, 'cantidad'),
             imagen: this.getText(node, 'imagen') || null,
             fecha: this.getText(node, 'fecha'),

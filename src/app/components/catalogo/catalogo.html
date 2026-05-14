@@ -1,11 +1,100 @@
-
 <header class="header">
+
   <h1 class="title">🌸 Catálogo 🌸</h1>
-  <p class="subtitle">Encuentra tus productos favoritos 💕✨</p>
+
+  <p class="subtitle">
+    Encuentra tus productos favoritos 💕✨
+  </p>
+
 </header>
 
-<section class="grid">
-  @for (p of products(); track p.idProducto) {
-    <app-product-card [product]="p"></app-product-card>
-  }
-</section>
+<div class="catalog-layout">
+
+  <!-- Filtros -->
+  <aside class="sidebar">
+
+    <h2 class="filter-title">
+      Filtros
+    </h2>
+
+    <!-- Buscador -->
+    <input
+      type="text"
+      placeholder="🔍 Buscar productos..."
+      (input)="search.set($any($event.target).value)"
+    >
+
+    <!-- Categorías -->
+    <h3>Categorías</h3>
+
+    <div class="filters-group">
+
+      @for(cat of categorias; track cat){
+
+        <button
+          class="filter-btn"
+          [class.active]="categoriaSeleccionada() === cat"
+          (click)="categoriaSeleccionada.set(cat)"
+        >
+          {{cat}}
+        </button>
+
+      }
+
+    </div>
+
+    <!-- Precios -->
+    <h3>Precios</h3>
+
+    <div class="filters-group">
+
+      @for(precio of precios; track precio){
+
+        <button
+          class="filter-btn"
+          [class.active]="precioSeleccionado() === precio"
+          (click)="precioSeleccionado.set(precio)"
+        >
+          {{precio}}
+        </button>
+
+      }
+
+    </div>
+
+  </aside>
+
+  <!-- Productos -->
+  @if(filteredProducts().length === 0){
+
+  <div class="empty-products">
+
+    <div class="empty-icon">
+      🔍
+    </div>
+
+    <h2>
+      No encontramos productos :C
+    </h2>
+
+    <p>
+      Intenta cambiar los filtros o buscar otro producto 💕
+    </p>
+
+  </div>
+
+} @else {
+
+  <section class="grid">
+
+    @for (p of filteredProducts(); track p.idProducto) {
+
+      <app-product-card [product]="p"></app-product-card>
+
+    }
+
+  </section>
+
+}
+
+</div>

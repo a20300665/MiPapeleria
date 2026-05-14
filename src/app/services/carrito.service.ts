@@ -12,6 +12,7 @@ export class CarritoService {
   toast = inject(ToastService);
 
   addProduct(product: Product) {
+
     const current = this.items();
 
     const existing = current.find(
@@ -21,29 +22,54 @@ export class CarritoService {
     if (existing) {
 
       if (existing.cantidad < product.cantidad) {
+
         existing.cantidad++;
+
         this.items.set([...current]);
-        this.toast.show('Producto agregado al carrito 🛒', 'success');
+
+        this.toast.show(
+          'Producto agregado al carrito 🛒',
+          'success'
+        );
+
       } else {
-        this.toast.show('No puedes agregar más productos de los disponibles en stock.', 'error');
+
+        this.toast.show(
+          'No puedes agregar más productos de los disponibles en stock.',
+          'error'
+        );
+
       }
 
     } else {
 
       if (product.cantidad > 0) {
+
         this.items.set([
           ...current,
           { product, cantidad: 1 }
         ]);
-        this.toast.show('Producto agregado al carrito 🛒', 'success');
+
+        this.toast.show(
+          'Producto agregado al carrito 🛒',
+          'success'
+        );
+
       } else {
-        this.toast.show('Este producto está agotado.', 'error');
+
+        this.toast.show(
+          'Este producto está agotado.',
+          'error'
+        );
+
       }
 
     }
+
   }
 
   increase(idProducto: string) {
+
     const items = this.items();
 
     const item = items.find(
@@ -51,17 +77,33 @@ export class CarritoService {
     );
 
     if (item) {
+
       if (item.cantidad < item.product.cantidad) {
+
         item.cantidad++;
+
         this.items.set([...items]);
-        this.toast.show('Cantidad aumentada', 'info');
+
+        this.toast.show(
+          'Cantidad aumentada',
+          'info'
+        );
+
       } else {
-        this.toast.show('No hay suficiente stock disponible.', 'error');
+
+        this.toast.show(
+          'No hay suficiente stock disponible.',
+          'error'
+        );
+
       }
+
     }
+
   }
 
   decrease(idProducto: string) {
+
     const items = this.items();
 
     const item = items.find(
@@ -69,111 +111,260 @@ export class CarritoService {
     );
 
     if (item) {
+
       item.cantidad--;
 
       if (item.cantidad <= 0) {
+
         this.removeProduct(idProducto);
+
       } else {
+
         this.items.set([...items]);
-        this.toast.show('Cantidad reducida', 'info');
+
+        this.toast.show(
+          'Cantidad reducida',
+          'info'
+        );
+
       }
+
     }
+
   }
 
   removeProduct(idProducto: string) {
+
     this.items.set(
       this.items().filter(
         item => item.product.idProducto !== idProducto
       )
     );
 
-    this.toast.show('Producto eliminado del carrito', 'error');
+    this.toast.show(
+      'Producto eliminado del carrito',
+      'error'
+    );
+
   }
 
   clearCart() {
-    this.items.set([]);
-    this.toast.show('Carrito vaciado', 'info');
-  }
 
-  total() {
-    return this.items().reduce(
-      (sum, item) => sum + item.product.precio * item.cantidad,
-      0
+    this.items.set([]);
+
+    this.toast.show(
+      'Carrito vaciado',
+      'info'
     );
+
   }
 
   getCount() {
+
     return this.items().reduce(
       (total, item) => total + item.cantidad,
       0
     );
+
   }
 
-  exportXML(metodoPago: string = "Desconocido") {
+  getSubtotal() {
+
+    return this.items().reduce((acc, item) => {
+
+      return acc + (
+        Number(item.product.precio) *
+        Number(item.cantidad)
+      );
+
+    }, 0);
+
+  }
+
+  getIVA() {
+
+    return this.getSubtotal() * 0.16;
+
+  }
+
+  total() {
+
+    return this.getSubtotal() + this.getIVA();
+
+  }
+
+  exportXML(metodoPago: string = "PUE") {
+
     const items = this.items();
 
     const fecha = new Date().toISOString();
 
-    let subtotal = 0;
-    let productosXML = '';
+    const subtotal = this.getSubtotal();
 
-    items.forEach(item => {
-      const precio = item.product.precio;
-      const cantidad = item.cantidad;
-      const totalProducto = precio * cantidad;
+    const iva = this.getIVA();
 
-      subtotal += totalProducto;
+    const total = this.total();
 
-      productosXML += `
-        <producto>
-          <nombre>${item.product.nombre}</nombre>
-          <precio>${precio}</precio>
-          <cantidad>${cantidad}</cantidad>
-          <total>${totalProducto}</total>
-        </producto>
+    let conceptosXML = '';
+
+    items.forEach((item, index) => {
+
+      const precio = Number(item.product.precio);
+
+      const cantidad = Number(item.cantidad);
+
+      const importe = precio * cantidad;
+
+      const impuesto = importe * 0.16;
+
+      conceptosXML += `
+
+        <cfdi:Concepto
+            ClaveProdServ="44121618"
+            NoIdentificacion="${index + 1}"
+            Cantidad="${cantidad.toFixed(2)}"
+            ClaveUnidad="H87"
+            Unidad="Pieza"
+            Descripcion="${this.escapeXML(item.product.nombre)}"
+            ValorUnitario="${precio.toFixed(2)}"
+            Importe="${importe.toFixed(2)}"
+            ObjetoImp="02">
+
+            <cfdi:Impuestos>
+
+                <cfdi:Traslados>
+
+                    <cfdi:Traslado
+                        Base="${importe.toFixed(2)}"
+                        Impuesto="002"
+                        TipoFactor="Tasa"
+                        TasaOCuota="0.160000"
+                        Importe="${impuesto.toFixed(2)}"/>
+
+                </cfdi:Traslados>
+
+            </cfdi:Impuestos>
+
+        </cfdi:Concepto>
+
       `;
-    });
 
-    const iva = subtotal * 0.16;
-    const total = subtotal + iva;
+    });
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 
-<ticket>
+<cfdi:Comprobante
+    xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
-  <fecha>${fecha}</fecha>
+    Version="4.0"
 
-  <metodo_pago>${metodoPago}</metodo_pago>
+    Serie="A"
 
-  <productos>
+    Folio="1"
 
-${productosXML}
+    Fecha="${fecha}"
 
-  </productos>
+    Sello="SELLO_NO_DISPONIBLE"
 
-  <subtotal>${subtotal.toFixed(2)}</subtotal>
+    FormaPago="31"
 
-  <iva>${iva.toFixed(2)}</iva>
+    NoCertificado="NO_CERTIFICADO"
 
-  <total>${total.toFixed(2)}</total>
+    Certificado="CERTIFICADO_NO_DISPONIBLE"
 
-</ticket>
+    SubTotal="${subtotal.toFixed(2)}"
+
+    Moneda="MXN"
+
+    Total="${total.toFixed(2)}"
+
+    TipoDeComprobante="I"
+
+    Exportacion="01"
+
+    MetodoPago="${metodoPago}"
+
+    LugarExpedicion="45010">
+
+    <cfdi:Emisor
+
+        Rfc="RFC_NO_DISPONIBLE"
+
+        Nombre="PAPELERIA CREATIVA SA DE CV"
+
+        RegimenFiscal="601"/>
+
+    <cfdi:Receptor
+
+        Rfc="RFC_NO_DISPONIBLE"
+
+        Nombre="CLIENTE GENERAL"
+
+        DomicilioFiscalReceptor="44100"
+
+        RegimenFiscalReceptor="605"
+
+        UsoCFDI="G03"/>
+
+    <cfdi:Conceptos>
+
+${conceptosXML}
+
+    </cfdi:Conceptos>
+
+    <cfdi:Impuestos
+        TotalImpuestosTrasladados="${iva.toFixed(2)}">
+
+        <cfdi:Traslados>
+
+            <cfdi:Traslado
+                Base="${subtotal.toFixed(2)}"
+                Impuesto="002"
+                TipoFactor="Tasa"
+                TasaOCuota="0.160000"
+                Importe="${iva.toFixed(2)}"/>
+
+        </cfdi:Traslados>
+
+    </cfdi:Impuestos>
+
+</cfdi:Comprobante>
 `;
 
-    const blob = new Blob([xml], { type: 'application/xml' });
+    const blob = new Blob(
+      [xml],
+      { type: 'application/xml' }
+    );
 
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
 
     a.href = url;
+
     a.download = 'ticket_compra.xml';
 
     a.click();
 
     URL.revokeObjectURL(url);
 
-    this.toast.show('Compra exportada correctamente', 'success');
+    this.toast.show(
+      'Compra exportada correctamente',
+      'success'
+    );
+
+  }
+
+  private escapeXML(text: string): string {
+
+    return text
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&apos;');
+
   }
 
 }

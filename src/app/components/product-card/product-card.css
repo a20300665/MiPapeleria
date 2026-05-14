@@ -96,7 +96,7 @@
   cursor: not-allowed;
 }
 
-/* 🌸 CONTENEDOR */
+/* CONTENEDOR */
 .qty-control {
   display: flex;
   align-items: center;
@@ -106,7 +106,7 @@
   margin: 10px 0;
 }
 
-/* 💕 BOTONES + y - */
+/* BOTONES + y - */
 .qty-control button {
   width: 32px;
   height: 32px;
@@ -127,7 +127,7 @@
   transform: scale(1.1);
 }
 
-/* 💖 INPUT */
+/* INPUT */
 .qty-control input {
   width: 50px;
   text-align: center;
@@ -142,7 +142,7 @@
   outline: none;
 }
 
-/* 🌸 QUITAR FLECHAS DEL INPUT */
+/* QUITAR FLECHAS DEL INPUT */
 .qty-control input::-webkit-outer-spin-button,
 .qty-control input::-webkit-inner-spin-button {
   -webkit-appearance: none;

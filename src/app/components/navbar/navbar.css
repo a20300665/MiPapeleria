@@ -67,7 +67,7 @@
   transform: scale(1.05);
 }
 
-/* 📱 RESPONSIVE (CLAVE PARA QUE NO SE CORTE) */
+/* RESPONSIVE (CLAVE PARA QUE NO SE CORTE) */
 @media (max-width: 768px) {
   .links span {
     display: none; /* oculta texto en pantallas pequeñas */

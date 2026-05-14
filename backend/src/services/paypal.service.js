@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 
 const paypalConfig = {
-  clientId: "ASq6PpMotnb7qi_s9c1NZQkzci97ajECBrnPVziSpSi0uidYzNvfB8doIk3mph8ALNqvjglWDKLBzh0k",
-  clientSecret: 'EIRwUYX8DdCVnui_419UEB3wIC2XyFFdrOBn8hGOr4Xs_LKjwckUBs91SNz0o4cvWg2Ib3gdkkeMGXcb',
+  clientId: "AV8LCGWvzxcfstUBgNHEfM17ZsK7btmE7NrDxvADzh0ebNnvfZqJAsE7hv3bYx8yXVdaTWa-BskIDAjV",
+  clientSecret: 'EEAcKcbfwNbbZ5LCB1SJrtal8AqqjvXSwhWBms0Dfj7gRUUb47Uenlzv8mltV1xatK8R5gX8oXukWXcV',
   baseUrl: 'https://api-m.sandbox.paypal.com'
 };
 

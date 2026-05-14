@@ -1,55 +1,126 @@
-<h2>🛒 Carrito</h2>
+<h2 class="cart-title">🛒 Carrito 🛒</h2>
 
-<div class="cart-container">
+@if(carrito.items().length === 0){
 
-@for (item of carrito.items(); track item.product.idProducto) {
+  <div class="empty-cart">
 
-<div class="cart-item">
+    <div class="empty-icon">🛍</div>
 
-<div class="item-left">
-<img
-[src]="'/' + (item.product.imagen || 'no-image.jpg')"
-[alt]="item.product.nombre"
-/>
-</div>
+    <h3>Tu carrito está vacío</h3>
 
-<div class="item-center">
-<h3>{{ item.product.nombre }}</h3>
-<p>{{ item.product.precio | currency:'MXN' }}</p>
-</div>
+    <p>
+      Tu carrito está esperando productos 💕
+    </p>
 
-<div class="item-right">
+    <button routerLink="/">
+      Ir al catálogo
+    </button>
 
-<button (click)="carrito.decrease(item.product.idProducto)">
--
-</button>
+  </div>
 
-<span>{{ item.cantidad }}</span>
+} @else {
 
-<button (click)="carrito.increase(item.product.idProducto)">
-+
-</button>
+<div class="carrito-layout">
 
-<button (click)="carrito.removeProduct(item.product.idProducto)">
-🗑
-</button>
+  <!-- PRODUCTOS -->
+  <div class="productos-section">
 
-</div>
+    @for (item of carrito.items(); track item.product.idProducto) {
+
+    <div class="cart-item">
+
+      <!-- IMAGEN -->
+      <div class="item-left">
+
+        <img
+          [src]="'/' + (item.product.imagen || 'no-image.jpg')"
+          [alt]="item.product.nombre"
+        />
+
+      </div>
+
+      <!-- INFO -->
+      <div class="item-center">
+
+        <h3>{{ item.product.nombre }}</h3>
+
+        <p>
+          {{ item.product.precio | currency:'MXN' }}
+        </p>
+
+      </div>
+
+      <!-- CONTROLES -->
+      <div class="item-right">
+
+        <button
+          (click)="carrito.decrease(item.product.idProducto)">
+          -
+        </button>
+
+        <span>{{ item.cantidad }}</span>
+
+        <button
+          (click)="carrito.increase(item.product.idProducto)">
+          +
+        </button>
+
+        <button
+          (click)="carrito.removeProduct(item.product.idProducto)">
+          🗑
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="resumen-section">
+
+    <h3>Resumen 💕</h3>
+
+    <div class="resumen-info">
+
+      <p>
+        Subtotal:
+        <span>
+          {{ carrito.getSubtotal() | currency:'MXN' }}
+        </span>
+      </p>
+
+      <p>
+        IVA (16%):
+        <span>
+          {{ carrito.getIVA() | currency:'MXN' }}
+        </span>
+      </p>
+
+      <p class="total">
+        Total:
+        <span>
+          {{ carrito.total() | currency:'MXN' }}
+        </span>
+      </p>
+
+    </div>
+
+    <button
+      class="btn-clear"
+      (click)="carrito.clearCart()"
+    >
+      Vaciar carrito
+    </button>
+
+    <div class="paypal-container">
+      <app-paypal></app-paypal>
+    </div>
+
+  </div>
 
 </div>
 
 }
-
-</div>
-
-<hr>
-
-<h3>Total: {{ carrito.total() | currency:'MXN' }}</h3>
-
-<button class="btn-clear" (click)="carrito.clearCart()">
-   Vaciar carrito 🗑️
-</button>
-
-<div class="paypal-container">
-  <app-paypal></app-paypal>
-</div>

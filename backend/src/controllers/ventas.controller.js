@@ -2,7 +2,7 @@ import db from '../config/db.js';
 
 
 // ======================================================
-// 🔥 CREAR VENTA
+// CREAR VENTA
 // ======================================================
 export function crearVenta(req, res) {
 
@@ -10,15 +10,18 @@ export function crearVenta(req, res) {
 
   try {
     const { productos, total, metodo_pago, id_transaccion } = req.body;
+    const iva = total * 0.16;
+    const subtotal = total - iva;
 
     const sqlVenta = `
-      INSERT INTO ventas (id_usuario, total, fecha, metodo_pago, id_transaccion, estado_pago)
-      VALUES (?, ?, NOW(), ?, ?, ?)
-    `;
+    INSERT INTO ventas 
+    (id_usuario, subtotal, iva, total, fecha, metodo_pago, id_transaccion, estado_pago)
+    VALUES (?, ?, ?, ?, NOW(), ?, ?, ?)
+  `;
 
     db.query(
       sqlVenta,
-      [1, total, metodo_pago, id_transaccion, 'COMPLETADO'],
+      [1, subtotal, iva, total, metodo_pago, id_transaccion, 'COMPLETADO'],
       (error, result) => {
 
         if (error) {
@@ -37,7 +40,7 @@ export function crearVenta(req, res) {
 
         const valores = productos.map(p => [
           idVenta,
-          p.product.idProducto, // ✅ AQUÍ EL FIX
+          p.product.idProducto, 
           p.cantidad,
           p.product.precio,
           p.product.precio * p.cantidad
@@ -64,7 +67,7 @@ export function crearVenta(req, res) {
 
 
 // ======================================================
-// 📦 OBTENER SOLO VENTAS
+// OBTENER SOLO VENTAS
 // ======================================================
 export function obtenerVentas(req, res) {
 
@@ -86,7 +89,7 @@ export function obtenerVentas(req, res) {
 
 
 // ======================================================
-// 🚀 OBTENER VENTAS CON PRODUCTOS (PRO 🔥)
+// OBTENER VENTAS CON PRODUCTOS 
 // ======================================================
 export function obtenerVentasConDetalle(req, res) {
 
@@ -94,6 +97,8 @@ export function obtenerVentasConDetalle(req, res) {
   SELECT 
     v.id_venta,
     v.fecha,
+    v.iva,
+    v.subtotal,
     v.total,
     v.metodo_pago,
     v.estado_pago,
@@ -116,7 +121,7 @@ export function obtenerVentasConDetalle(req, res) {
       return res.status(500).json({ error: 'Error al obtener detalle' });
     }
 
-    // 🔥 AGRUPAR POR PEDIDO
+    // AGRUPAR POR PEDIDO
     const pedidos = {};
 
     resultados.forEach(row => {
@@ -125,6 +130,8 @@ export function obtenerVentasConDetalle(req, res) {
         pedidos[row.id_venta] = {
           id_venta: row.id_venta,
           fecha: row.fecha,
+          iva: row.iva,
+          subtotal: row.subtotal,
           total: row.total,
           metodo_pago: row.metodo_pago,
           estado_pago: row.estado_pago,

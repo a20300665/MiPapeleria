@@ -21,7 +21,7 @@ export class PaypalComponent implements AfterViewInit {
   async ngAfterViewInit(){
 
     const paypal: any = await loadScript({
-      clientId: "ASq6PpMotnb7qi_s9c1NZQkzci97ajECBrnPVziSpSi0uidYzNvfB8doIk3mph8ALNqvjglWDKLBzh0k",
+      clientId: "AV8LCGWvzxcfstUBgNHEfM17ZsK7btmE7NrDxvADzh0ebNnvfZqJAsE7hv3bYx8yXVdaTWa-BskIDAjV",
       currency: "MXN"
     });
 
@@ -32,7 +32,7 @@ export class PaypalComponent implements AfterViewInit {
 
     paypal.Buttons({
 
-      // 🔥 CREAR ORDEN (BACKEND)
+      //CREAR ORDEN (BACKEND)
       createOrder: async () => {
         try {
           const response = await firstValueFrom(
@@ -42,86 +42,93 @@ export class PaypalComponent implements AfterViewInit {
             })
           );
 
-          console.log("🟢 ORDEN CREADA:", response);
+          console.log("ORDEN CREADA:", response);
 
           return response.id;
 
         } catch (error) {
-          console.error('❌ Error al crear orden:', error);
+          console.error('Error al crear orden:', error);
           alert('Error al crear la orden');
           throw error;
         }
       },
 
       // ======================================================
-      // 🔥🔥🔥 INICIO onApprove 🔥🔥🔥
+      //  INICIO onApprove 
       // ======================================================
       onApprove: async (data: any) => {
 
-        console.log("🔥 Entró a onApprove");
+        console.log("Entró a onApprove");
 
         try {
 
-          console.log("👉 ID orden:", data.orderID);
+          console.log("ID orden:", data.orderID);
 
-          // 1️⃣ CAPTURAR PAGO
+          // 1 CAPTURAR PAGO
           const capture = await firstValueFrom(
             this.paypalService.capturarOrden(data.orderID)
           );
 
-          console.log('✅ Pago capturado:', capture);
+          console.log('Pago capturado:', capture);
 
-          // 2️⃣ DEBUG DATOS
-          console.log("🟡 Intentando guardar venta...");
-          console.log("📦 Productos:", this.carrito.items());
-          console.log("💰 Total:", this.carrito.total());
+         // 2️ DEBUG DATOS
+            const subtotal = this.carrito.total();
+            const iva = this.carrito.getIVA();
+            const totalFinal = subtotal + iva;
 
-          // 3️⃣ GUARDAR EN BASE DE DATOS
-          const response = await firstValueFrom(
-            this.ventasService.guardarVenta({
-              productos: this.carrito.items(),
-              total: this.carrito.total(),
-              metodo_pago: 'PayPal',
-              id_transaccion: data.orderID
-            })
-          );
+            console.log(" Intentando guardar venta...");
+            console.log("Productos:", this.carrito.items());
+            console.log("Subtotal:", subtotal);
+            console.log("IVA:", iva);
+            console.log("Total FINAL:", totalFinal);
 
-          console.log("🟢 RESPUESTA BACKEND:", response);
+            // 3️ GUARDAR EN BASE DE DATOS
+            const response = await firstValueFrom(
+              this.ventasService.guardarVenta({
+                productos: this.carrito.items(),
+                total: totalFinal, 
+                iva: iva,
+                metodo_pago: 'PayPal',
+                id_transaccion: data.orderID
+              })
+            );
 
-          // 4️⃣ MENSAJE
+          console.log("RESPUESTA BACKEND:", response);
+
+          // 4️ MENSAJE
           alert("Pago realizado correctamente 💖");
 
-          // 5️⃣ HISTORIAL LOCAL
+          // 5️ HISTORIAL LOCAL
           this.historial.agregarCompra(
             this.carrito.items(),
             this.carrito.total()
           );
 
-          // 6️⃣ EXPORTAR XML
+          // 6️ EXPORTAR XML
           this.carrito.exportXML("PayPal");
 
-          // 7️⃣ LIMPIAR CARRITO
+          // 7️ LIMPIAR CARRITO
           this.carrito.clearCart();
 
         } catch (error) {
-          console.error('❌ ERROR COMPLETO:', error);
+          console.error('ERROR COMPLETO:', error);
           alert("Error al procesar el pago");
         }
 
       },
       // ======================================================
-      // 🔥🔥🔥 FIN onApprove 🔥🔥🔥
+      // FIN onApprove 
       // ======================================================
 
-      // ❌ CANCELADO
+      //  CANCELADO
       onCancel: () => {
         console.log("⚠️ Pago cancelado");
         alert('Pago cancelado');
       },
 
-      // ❌ ERROR GENERAL
+      //  ERROR GENERAL
       onError: (err: any) => {
-        console.error('❌ Error PayPal:', err);
+        console.error('Error PayPal:', err);
         alert('Error en PayPal');
       }
 

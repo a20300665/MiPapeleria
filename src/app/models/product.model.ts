@@ -2,7 +2,8 @@ export interface Product {
     idProducto: string;      
     nombre: string;          
     precio: number;          
-    descripcion: string;     
+    descripcion: string;  
+    categoria: string;   
     estado: string;          
     cantidad: number;        
     imagen: string | null;   

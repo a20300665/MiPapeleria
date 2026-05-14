@@ -1,11 +1,11 @@
 <div class="cart-container">
 
-  <!-- 🛒 BOTÓN -->
+  <!-- BOTÓN -->
   <button class="cart-button" (click)="toggle()">
     🛒 {{ carrito.getCount() }}
   </button>
 
-  <!-- 📦 PANEL -->
+  <!-- PANEL -->
   @if(open()){
 
   <div class="cart-panel">
@@ -28,15 +28,22 @@
 
       }
 
-      <hr>
+      <!-- 💰 TOTAL -->
+      <div class="total-box">
 
-      <p class="total">
-        Total: {{ carrito.total() | currency:'MXN' }}
-      </p>
+        <p>Subtotal: {{ carrito.getSubtotal() | currency:'MXN' }}</p>
 
-      <!-- 💖 BOTÓN BONITO -->
+        <p>IVA: {{ carrito.getIVA() | currency:'MXN' }}</p>
+
+        <p class="total">
+          Total: {{ carrito.total() | currency:'MXN' }}
+        </p>
+
+      </div>
+
+      <!-- 🛒 BOTÓN -->
       <button class="go-cart-btn" routerLink="/carrito" (click)="toggle()">
-        Ver carrito completo 🛒
+        Ver carrito completo
       </button>
 
     }
