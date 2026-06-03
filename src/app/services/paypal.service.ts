@@ -16,5 +16,8 @@ export class PaypalService {
   capturarOrden(orderId: string){
     return this.http.post<any>(`${this.api}/capture-order`, { orderId });
   }
+  guardarPedidoCancelado(data: any){
+  return this.http.post<any>(`${this.api}/cancelado`, data);
+}
 
 }

@@ -26,34 +26,41 @@ export class MisPedidosComponent implements OnInit {
 
   loading = true;
 
-  ngOnInit(){
+  ngOnInit() {
+  this.ventasService.obtenerVentasDetalle().subscribe({
+    next: (data) => {
+      const pedidosOrdenados = [...data].sort((a, b) => {
+        return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
+      });
 
-    this.ventasService.obtenerVentasDetalle().subscribe({
+      this.pedidos = pedidosOrdenados.map((pedido: any) => {
+        const subtotalCalculado = pedido.productos.reduce(
+          (acc: number, prod: any) => acc + Number(prod.precio) * Number(prod.cantidad),
+          0
+        );
 
-      next: (data) => {
+        const ivaCalculado = subtotalCalculado * 0.16;
+        const totalCalculado = subtotalCalculado + ivaCalculado;
 
-        this.pedidos = [...data];
+        return {
+          ...pedido,
+          subtotal: subtotalCalculado,
+          iva: ivaCalculado,
+          total: totalCalculado
+        };
+      });
 
-        this.loading = false;
+      this.loading = false;
+      this.cdr.detectChanges();
+      console.log("PEDIDOS:", this.pedidos);
+    },
 
-        this.cdr.detectChanges();
-
-        console.log("PEDIDOS:", this.pedidos);
-
-      },
-
-      error: (err) => {
-
-        console.error(err);
-
-        this.loading = false;
-
-        this.cdr.detectChanges();
-
-      }
-
-    });
-
-  }
+    error: (err) => {
+      console.error(err);
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
 }

@@ -1,0 +1,45 @@
+.page-container{
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.card{
+  background: white;
+  border-radius: 30px;
+  padding: 40px;
+  border: 2px solid #ffd6e8;
+  box-shadow: 0 10px 25px rgba(255,105,180,0.12);
+}
+
+.page-title{
+  text-align: center;
+  color: #d63384;
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.page-subtitle{
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 35px;
+}
+
+.section{
+  margin-bottom: 28px;
+}
+
+.section h2{
+  color: #d63384;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.section p{
+  color: #555;
+  font-size: 15px;
+  line-height: 1.8;
+  text-align: justify;
+}

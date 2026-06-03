@@ -9,14 +9,19 @@ export class VentasService {
   private http = inject(HttpClient);
   private api = 'http://localhost:3000/api/ventas';
 
-  obtenerVentasDetalle(){
-  return this.http.get<any[]>(`${this.api}/detalle`);
+  guardarVenta(data: any) {
+    return this.http.post<any>(`${this.api}`, data);
   }
-  obtenerVentas(){
-  return this.http.get<any[]>(this.api);
+
+  guardarPedidoCancelado(data: any) {
+    return this.http.post<any>(`${this.api}/cancelado`, data);
   }
-  guardarVenta(data: any){
-    return this.http.post(this.api, data);
+
+  obtenerVentas() {
+    return this.http.get<any[]>(`${this.api}`);
   }
-  
+
+  obtenerVentasDetalle() {
+    return this.http.get<any[]>(`${this.api}/detalle`);
+  }
 }

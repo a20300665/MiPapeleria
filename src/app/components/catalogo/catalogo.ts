@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { ProductCardComponent } from '../product-card/product-card';
 import { ProductsService } from '../../services/products.service';
 import { CarritoService } from '../../services/carrito.service';
@@ -11,87 +11,78 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './catalogo.html',
   styleUrls: ['./catalogo.css'],
 })
-export class CatalogoComponent {
+export class CatalogoComponent implements OnInit {
 
   private productsService = inject(ProductsService);
+  private cdr = inject(ChangeDetectorRef);
   carrito = inject(CarritoService);
 
-  // Productos
   products = toSignal(
     this.productsService.getAll(),
     { initialValue: [] }
   );
 
-  // Texto de búsqueda
   search = signal('');
-
-  // Categoría seleccionada
   categoriaSeleccionada = signal('Todas');
-
-  // Precio seleccionado
   precioSeleccionado = signal('Todos');
 
-  // Categorías
-  categorias = [
-    'Todas',
-    'Papeleria Escolar',
-    'Oficina',
-    'Arte y Manualidades',
-    'Tecnologia',
-    'Mobiliario'
-  ];
+  categorias = signal<string[]>(['Todas']);
 
-  // Rangos de precio
-  precios = [
+  precios: string[] = [
     'Todos',
     'Menos de $50',
     '$50 - $100',
     'Más de $100'
   ];
 
-  // Productos filtrados
-  filteredProducts = computed(() => {
+  ngOnInit(): void {
+    this.cargarCategorias();
+  }
 
+  cargarCategorias(): void {
+    this.productsService.getCategorias().subscribe({
+      next: (data) => {
+        const nombres = data
+          .filter(cat => cat.estado === 'activa')
+          .map(cat => cat.nombre_categoria);
+
+        this.categorias.set(['Todas', ...nombres]);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error cargando categorías:', err);
+      }
+    });
+  }
+
+  filteredProducts = computed(() => {
     const text = this.search().toLowerCase();
     const categoria = this.categoriaSeleccionada();
     const precio = this.precioSeleccionado();
 
     return this.products().filter(product => {
-
-      // Filtro búsqueda
       const coincideBusqueda =
         product.nombre.toLowerCase().includes(text);
 
-      // Filtro categoría
       const coincideCategoria =
         categoria === 'Todas' ||
         product.categoria === categoria;
 
-      // Filtro precio
       let coincidePrecio = true;
 
-      if(precio === 'Menos de $50'){
+      if (precio === 'Menos de $50') {
         coincidePrecio = product.precio < 50;
       }
 
-      if(precio === '$50 - $100'){
-        coincidePrecio =
-          product.precio >= 50 &&
-          product.precio <= 100;
+      if (precio === '$50 - $100') {
+        coincidePrecio = product.precio >= 50 && product.precio <= 100;
       }
 
-      if(precio === 'Más de $100'){
+      if (precio === 'Más de $100') {
         coincidePrecio = product.precio > 100;
       }
 
-      return (
-        coincideBusqueda &&
-        coincideCategoria &&
-        coincidePrecio
-      );
-
+      return coincideBusqueda && coincideCategoria && coincidePrecio;
     });
-
   });
-
 }

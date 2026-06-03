@@ -17,19 +17,17 @@
       Filtros
     </h2>
 
-    <!-- Buscador -->
     <input
       type="text"
       placeholder="🔍 Buscar productos..."
       (input)="search.set($any($event.target).value)"
     >
 
-    <!-- Categorías -->
     <h3>Categorías</h3>
 
     <div class="filters-group">
 
-      @for(cat of categorias; track cat){
+      @for(cat of categorias(); track cat){
 
         <button
           class="filter-btn"
@@ -43,7 +41,6 @@
 
     </div>
 
-    <!-- Precios -->
     <h3>Precios</h3>
 
     <div class="filters-group">
@@ -67,34 +64,32 @@
   <!-- Productos -->
   @if(filteredProducts().length === 0){
 
-  <div class="empty-products">
+    <div class="empty-products">
 
-    <div class="empty-icon">
-      🔍
+      <div class="empty-icon">
+        🔍
+      </div>
+
+      <h2>
+        No encontramos productos :C
+      </h2>
+
+      <p>
+        Intenta cambiar los filtros o buscar otro producto 💕
+      </p>
+
     </div>
 
-    <h2>
-      No encontramos productos :C
-    </h2>
+  } @else {
 
-    <p>
-      Intenta cambiar los filtros o buscar otro producto 💕
-    </p>
+    <section class="grid">
 
-  </div>
+      @for (p of filteredProducts(); track p.idProducto) {
+        <app-product-card [product]="p"></app-product-card>
+      }
 
-} @else {
+    </section>
 
-  <section class="grid">
-
-    @for (p of filteredProducts(); track p.idProducto) {
-
-      <app-product-card [product]="p"></app-product-card>
-
-    }
-
-  </section>
-
-}
+  }
 
 </div>

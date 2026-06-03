@@ -8,12 +8,82 @@
 
     <!-- LINKS -->
     <div class="links">
-      <a routerLink="/">Inicio</a>
-      <a routerLink="/catalogo">Catálogo</a>
-      <a routerLink="/mis-pedidos">Pedidos</a>
+
+      <a routerLink="/catalogo">
+        Catálogo
+      </a>
+
+      @if(isLoggedIn){
+
+        <a routerLink="/mis-pedidos">
+          Pedidos
+        </a>
+
+      }
+
+      @if(isAdmin){
+        <a routerLink="/admin">
+          Administrador</a>
+      }
+
     </div>
 
-    <!-- CARRITO AQUÍ -->
+    <!-- SI HAY SESIÓN -->
+    @if (isLoggedIn) {
+
+      <div class="profile-box">
+
+        <button
+          class="profile-btn"
+          (click)="toggleMenu()"
+        >
+
+          <img
+            src="/perfil.png"
+            alt="Perfil"
+            class="profile-img"
+          >
+
+        </button>
+
+        @if (menuOpen()) {
+
+          <div class="profile-menu">
+
+            <p class="user-name">
+              {{ user?.nombre || 'Usuario' }}
+            </p>
+
+            <button
+              class="logout-btn"
+              (click)="logout()"
+            >
+              Cerrar sesión
+            </button>
+
+          </div>
+
+        }
+
+      </div>
+
+    } @else {
+
+      <div class="auth-links">
+
+        <a routerLink="/login">
+          Entrar
+        </a>
+
+        <a routerLink="/register">
+          Registrar
+        </a>
+
+      </div>
+
+    }
+
+    <!-- CARRITO -->
     <app-cart-widget></app-cart-widget>
 
   </div>

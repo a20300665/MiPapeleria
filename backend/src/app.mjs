@@ -4,6 +4,8 @@ import cors from 'cors';
 import productosRoutes from './routes/products.routes.js';
 import paypalRoutes from './routes/paypal.routes.js';
 import ventasRoutes from './routes/ventas.routes.js';
+import authRoutes from './routes/auth.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 import './config/db.js';
 
@@ -15,5 +17,7 @@ app.use(express.json());
 app.use('/api', productosRoutes);
 app.use('/api/paypal', paypalRoutes);
 app.use('/api/ventas', ventasRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 export default app;

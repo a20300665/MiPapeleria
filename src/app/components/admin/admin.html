@@ -1,0 +1,240 @@
+<div class="admin-page">
+
+  <header class="admin-header">
+    <h1>Panel de administración</h1>
+    <p>Gestiona productos y categorías del inventario</p>
+  </header>
+
+  <div class="admin-tabs">
+    <button
+      type="button"
+      [class.active]="vista === 'productos'"
+      (click)="cambiarVista('productos')">
+      Productos
+    </button>
+
+    <button
+      type="button"
+      [class.active]="vista === 'categorias'"
+      (click)="cambiarVista('categorias')">
+      Categorías
+    </button>
+  </div>
+
+  @if(vista === 'productos'){
+
+    <section class="admin-layout">
+
+      <div class="form-card">
+        <h2>{{ editandoProducto ? 'Editar producto' : 'Nuevo producto' }}</h2>
+
+
+        <form (ngSubmit)="guardarProducto()">
+
+          <label>Nombre</label>
+          <input
+            [(ngModel)]="productoForm.nombre"
+            name="nombre"
+            placeholder="Nombre"
+            required
+          />
+
+          <label>Descripción</label>
+          <textarea
+            [(ngModel)]="productoForm.descripcion"
+            name="descripcion"
+            placeholder="Descripción"
+          ></textarea>
+
+          <label>Precio</label>
+          <input
+            [(ngModel)]="productoForm.precio"
+            name="precio"
+            type="number"
+            placeholder="Precio"
+            required
+          />
+
+          <label>Stock</label>
+          <input
+            [(ngModel)]="productoForm.stock"
+            name="stock"
+            type="number"
+            placeholder="Stock"
+            required
+          />
+
+          <label>Imagen</label>
+          <input
+            [(ngModel)]="productoForm.imagen"
+            name="imagen"
+            placeholder="Imagen"
+          />
+
+          <label>Categoría</label>
+          <select
+            [(ngModel)]="productoForm.id_categoria"
+            name="id_categoria"
+            required
+          >
+            <option value="">Selecciona una categoría</option>
+            @for(cat of categorias; track cat.id_categoria){
+              <option [value]="cat.id_categoria">
+                {{ cat.nombre_categoria }}
+              </option>
+            }
+          </select>
+
+          <button type="submit">
+            {{ editandoProducto ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </form>
+      </div>
+
+      <div class="table-card">
+        <h2>Inventario</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Categoría</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for(prod of productos; track prod.id_producto){
+              <tr>
+                <td>
+                  <img
+                    class="prod-img"
+                    [src]="'/' + (prod.imagen || 'no-image.jpg')"
+                    [alt]="prod.nombre"
+                  />
+                </td>
+
+                <td>{{ prod.id_producto }}</td>
+                <td>{{ prod.nombre }}</td>
+                <td>{{ prod.precio | currency:'MXN' }}</td>
+                <td>{{ prod.stock }}</td>
+                <td>
+                  <span
+                    [class.ok]="prod.estado_stock === 'Disponible'"
+                    [class.bad]="prod.estado_stock === 'Faltante'"
+                  >
+                    {{ prod.estado_stock }}
+                  </span>
+                </td>
+                <td>{{ prod.nombre_categoria || prod.id_categoria }}</td>
+                <td class="actions">
+                  <button type="button" (click)="seleccionarProducto(prod)">
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    class="danger"
+                    (click)="eliminarProducto(prod.id_producto)"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  } @else {
+
+    <section class="admin-layout">
+
+      <div class="form-card">
+        <h2>{{ editandoCategoria ? 'Editar categoría' : 'Nueva categoría' }}</h2>
+
+
+        <form (ngSubmit)="guardarCategoria()">
+
+          <label>Nombre</label>
+          <input
+            [(ngModel)]="categoriaForm.nombre_categoria"
+            name="nombre_categoria"
+            placeholder="Nombre"
+            required
+          />
+
+          <label>Descripción</label>
+          <textarea
+            [(ngModel)]="categoriaForm.descripcion"
+            name="descripcion"
+            placeholder="Descripción"
+          ></textarea>
+
+          <label>Estado</label>
+          <select
+            [(ngModel)]="categoriaForm.estado"
+            name="estado"
+          >
+            <option value="activa">Activa</option>
+            <option value="inactiva">Inactiva</option>
+          </select>
+
+          <button type="submit">
+            {{ editandoCategoria ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </form>
+      </div>
+
+      <div class="table-card">
+        <h2>Categorías</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Estado</th>
+              <th>Productos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for(cat of categorias; track cat.id_categoria){
+              <tr>
+                <td>{{ cat.id_categoria }}</td>
+                <td>{{ cat.nombre_categoria }}</td>
+                <td>{{ cat.estado }}</td>
+                <td>{{ cat.total_productos }}</td>
+                <td class="actions">
+                  <button type="button" (click)="seleccionarCategoria(cat)">
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    class="danger"
+                    (click)="eliminarCategoria(cat.id_categoria)"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  }
+
+</div>

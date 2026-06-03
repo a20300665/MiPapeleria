@@ -18,7 +18,7 @@ export class PaypalComponent implements AfterViewInit {
   paypalService = inject(PaypalService);
   ventasService = inject(VentasService);
 
-  async ngAfterViewInit(){
+  async ngAfterViewInit() {
 
     const paypal: any = await loadScript({
       clientId: "AV8LCGWvzxcfstUBgNHEfM17ZsK7btmE7NrDxvADzh0ebNnvfZqJAsE7hv3bYx8yXVdaTWa-BskIDAjV",
@@ -32,7 +32,7 @@ export class PaypalComponent implements AfterViewInit {
 
     paypal.Buttons({
 
-      //CREAR ORDEN (BACKEND)
+      // CREAR ORDEN
       createOrder: async () => {
         try {
           const response = await firstValueFrom(
@@ -53,82 +53,114 @@ export class PaypalComponent implements AfterViewInit {
         }
       },
 
-      // ======================================================
-      //  INICIO onApprove 
-      // ======================================================
+      // CUANDO EL PAGO SE APRUEBA
       onApprove: async (data: any) => {
-
         console.log("Entró a onApprove");
 
         try {
-
           console.log("ID orden:", data.orderID);
 
-          // 1 CAPTURAR PAGO
+          // 1. Capturar pago
           const capture = await firstValueFrom(
             this.paypalService.capturarOrden(data.orderID)
           );
 
           console.log('Pago capturado:', capture);
 
-         // 2️ DEBUG DATOS
-            const subtotal = this.carrito.total();
-            const iva = this.carrito.getIVA();
-            const totalFinal = subtotal + iva;
+          // 2. Datos correctos
+          const subtotal = this.carrito.getSubtotal();
+          const iva = this.carrito.getIVA();
+          const totalFinal = this.carrito.total();
 
-            console.log(" Intentando guardar venta...");
-            console.log("Productos:", this.carrito.items());
-            console.log("Subtotal:", subtotal);
-            console.log("IVA:", iva);
-            console.log("Total FINAL:", totalFinal);
+          console.log("Intentando guardar venta...");
+          console.log("Productos:", this.carrito.items());
+          console.log("Subtotal:", subtotal);
+          console.log("IVA:", iva);
+          console.log("Total FINAL:", totalFinal);
 
-            // 3️ GUARDAR EN BASE DE DATOS
-            const response = await firstValueFrom(
-              this.ventasService.guardarVenta({
-                productos: this.carrito.items(),
-                total: totalFinal, 
-                iva: iva,
-                metodo_pago: 'PayPal',
-                id_transaccion: data.orderID
-              })
-            );
+          // 3. Guardar en base de datos
+          const response = await firstValueFrom(
+            this.ventasService.guardarVenta({
+              productos: this.carrito.items(),
+              subtotal: subtotal,
+              iva: iva,
+              total: totalFinal,
+              metodo_pago: 'PayPal',
+              id_transaccion: data.orderID
+            })
+          );
 
           console.log("RESPUESTA BACKEND:", response);
 
-          // 4️ MENSAJE
+          // 4. Mensaje
           alert("Pago realizado correctamente 💖");
 
-          // 5️ HISTORIAL LOCAL
+          // 5. Historial local
           this.historial.agregarCompra(
             this.carrito.items(),
-            this.carrito.total()
+            totalFinal
           );
 
-          // 6️ EXPORTAR XML
+          // 6. Exportar XML
           this.carrito.exportXML("PayPal");
 
-          // 7️ LIMPIAR CARRITO
+          // 7. Limpiar carrito
           this.carrito.clearCart();
 
         } catch (error) {
           console.error('ERROR COMPLETO:', error);
           alert("Error al procesar el pago");
         }
-
-      },
-      // ======================================================
-      // FIN onApprove 
-      // ======================================================
-
-      //  CANCELADO
-      onCancel: () => {
-        console.log("⚠️ Pago cancelado");
-        alert('Pago cancelado');
       },
 
-      //  ERROR GENERAL
-      onError: (err: any) => {
+      // SI EL USUARIO CANCELA
+      onCancel: async () => {
+        try {
+          const subtotal = this.carrito.getSubtotal();
+          const iva = this.carrito.getIVA();
+          const totalFinal = this.carrito.total();
+
+          await firstValueFrom(
+            this.ventasService.guardarPedidoCancelado({
+              productos: this.carrito.items(),
+              subtotal: subtotal,
+              iva: iva,
+              total: totalFinal,
+              metodo_pago: 'PayPal',
+              id_transaccion: 'CANCELADO'
+            })
+          );
+
+          alert('Pago cancelado');
+        } catch (error) {
+          console.error(error);
+          alert('Pago cancelado, pero no se pudo guardar el pedido');
+        }
+      },
+
+      // SI OCURRE UN ERROR
+      onError: async (err: any) => {
         console.error('Error PayPal:', err);
+
+        try {
+          const subtotal = this.carrito.getSubtotal();
+          const iva = this.carrito.getIVA();
+          const totalFinal = this.carrito.total();
+
+          await firstValueFrom(
+            this.ventasService.guardarPedidoCancelado({
+              productos: this.carrito.items(),
+              subtotal: subtotal,
+              iva: iva,
+              total: totalFinal,
+              metodo_pago: 'PayPal',
+              id_transaccion: 'ERROR'
+            })
+          );
+        } catch (error) {
+          console.error(error);
+        }
+
         alert('Error en PayPal');
       }
 
